@@ -1,5 +1,7 @@
 # When does internal-control normalisation help?
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21694734.svg)](https://doi.org/10.5281/zenodo.21694734)
+
 Simulation framework and closed-form criterion for spike-in normalisation in
 PCR-based quantification. Companion code for the manuscript *A variance-component
 criterion for deciding when internal-control normalisation improves molecular

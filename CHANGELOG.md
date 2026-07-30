@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.2 — 2026-07-30
+
+Metadata only. No code, no results, no figures changed.
+
+- `CITATION.cff` now records `repository-code` and the archived `doi`, and its
+  `version` field is aligned with the release. The DOI given is the version DOI
+  of v1.3.1, which is the release the manuscript cites; it resolves to that
+  exact archived state rather than to whichever version is newest.
+- The `v1.3.0` tag was published before the Zenodo integration was switched on
+  and was therefore never archived. `v1.3.1` is the first archived release and
+  is identical to `v1.3.0` in content. The `v1.3.0` GitHub release has been
+  retired to avoid pointing readers at an unarchived artifact.
+
 ## 1.3.0 — 2026-07-29
 
 Pre-release audit against the submitted manuscript. No result changes: every

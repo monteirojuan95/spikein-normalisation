@@ -22,10 +22,7 @@ keywords:
   - variance components
   - simulation study
 license: MIT
-version: "1.3.0"
-date-released: "2026-07-29"
-# TODO before release: fill both in once the repository is public and Zenodo
-# has minted the DOI, then paste the same values into the manuscript's
-# "Availability of data and materials" placeholder.
-repository-code: "https://github.com/USERNAME/spikein-normalisation"
-doi: "10.5281/zenodo.XXXXXXX"
+version: "1.3.2"
+date-released: "2026-07-30"
+repository-code: "https://github.com/monteirojuan95/spikein-normalisation"
+doi: "10.5281/zenodo.21694734"
