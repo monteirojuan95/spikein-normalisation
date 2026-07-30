@@ -1,0 +1,4 @@
+setting,sigma_s,sigma_c,true_contrast,true_theta_star,mean_sigma_s2,sd_sigma_s2,mean_sigma_c2,sd_sigma_c2,mean_m_c,mean_theta_star,sd_theta_star,mean_contrast,sd_contrast,mean_ci_lo,mean_ci_hi,pct_supports,pct_against,pct_indeterminate,pct_correct_sign,pct_wrong_sign,frac_sigma_s2_at_floor,frac_sigma_c2_at_floor,n_studies
+Favourable,0.6,0.1,0.346371,0.963523,0.358942,0.112019,0.0153514,0.0169132,0.00362779,0.947144,0.0474937,0.339963,0.112337,0.149662,0.527202,100,0,0,100,0,0,0.322,500
+Boundary,0.3,0.3,-0.00362897,0.490119,0.0900928,0.0365977,0.0899108,0.0346639,0.00362779,0.487593,0.136765,-0.00344574,0.0472994,-0.0841693,0.0786236,4,6.4,89.6,6.4,4,0,0,500
+Unfavourable,0.1,0.5,-0.243629,0.0379321,0.0141091,0.0152599,0.245401,0.0746588,0.00362779,0.0547373,0.0579909,-0.23492,0.076587,-0.356671,-0.101834,0,99.6,0.4,99.6,0,0.29,0,500

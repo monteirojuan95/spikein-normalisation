@@ -1,0 +1,33 @@
+{
+  "seed": 20260728,
+  "numpy": "2.4.4",
+  "matplotlib": "3.10.8",
+  "python": "3.12.3",
+  "studies_per_regime": 200,
+  "cv_repeats": 5,
+  "studies_per_grid_cell": 40,
+  "studies_per_sample_size": 120,
+  "mcse": "between-study SD / sqrt(number of studies)",
+  "figures": {
+    "1": {
+      "file": "figure1.png",
+      "script": "run_analysis.py",
+      "content": "RMSE across five representative regimes"
+    },
+    "2": {
+      "file": "figure2.png",
+      "script": "run_analysis.py",
+      "content": "Two-parameter sensitivity grid, 16 x 16"
+    },
+    "3": {
+      "file": "figure3.png",
+      "script": "run_analysis.py",
+      "content": "Dependence on study size"
+    },
+    "4": {
+      "file": "figure4.png",
+      "script": "run_robustness.py",
+      "content": "Departures from the model assumptions"
+    }
+  }
+}
