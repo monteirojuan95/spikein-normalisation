@@ -17,7 +17,10 @@ unchanged and reproduce bit-for-bit.
   test and by interval, 1000 studies per setting.
 - New `run_decision.py` (end-to-end decision analysis), `run_paradigm.py`
   (inverse vs classical calibration, Deming), `tests/test_assess.py`.
-- Figures are also written as PDF.
+- Figures are also written as PDF with embedded TrueType fonts; legend labels
+  follow the manuscript's estimator names; Figure 4 legend moved below the axes.
+- Every CSV, old and new, verified bit-for-bit on the pinned versions
+  (Python 3.12, NumPy 2.0.2) and on Python 3.13 with NumPy 2.5.
 
 ## 1.3.2 — 2026-07-30
 

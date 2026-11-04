@@ -56,9 +56,10 @@ those the archived results were produced with, recorded in
 Seeds: `SEED = 20260728` in `run_analysis.py` and `run_robustness.py`,
 `20260729` in `run_validation.py`, `20261104` in `run_decision.py` and
 `20261105` in `run_paradigm.py`; `run_calibration.py` is deterministic and uses
-none. Every CSV in `results/` reproduces bit-for-bit; the v1.3 outputs have been
-checked on the pinned versions, on Python 3.12 with NumPy 2.4 and on Python 3.13
-with NumPy 2.5. Figure PNGs are not byte-reproducible across
+none. Every CSV in `results/` reproduces bit-for-bit. All outputs of v1.4,
+including the new analyses, have been checked on the pinned versions (Python 3.12,
+NumPy 2.0.2) and on Python 3.13 with NumPy 2.5; the v1.3 outputs were also
+checked on Python 3.12 with NumPy 2.4. Figure PNGs are not byte-reproducible across
 Matplotlib versions, but the numbers they are drawn from are.
 
 ## Figures and tables

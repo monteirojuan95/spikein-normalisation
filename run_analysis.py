@@ -18,6 +18,8 @@ import argparse, json, os, sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+matplotlib.rcParams['pdf.fonttype'] = 42   # embed TrueType fonts in vector output
+matplotlib.rcParams['ps.fonttype'] = 42
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -30,6 +32,9 @@ REGIMES = {'A': (0.60, 0.10), 'B': (0.35, 0.25),
            'C': (0.10, 0.10), 'D': (0.10, 0.50), 'E': (0.60, 0.50)}
 GRID = np.linspace(0.05, 0.80, 16)
 NS = [15, 20, 30, 40, 60, 100, 200]
+# Legend labels follow the manuscript's names for the estimators.
+LABELS = {'M1 naive': 'M1 target only', 'M2 dCt': 'M2 $\\Delta$Ct',
+          'M3 partial': 'M3 estimated coefficient', 'M4 interaction': 'M4 interaction'}
 COLOURS = {'M1 naive': '#9e9e9e', 'M2 dCt': '#c0392b', 'M3 partial': '#2980b9',
            'M4 interaction': '#8e44ad'}
 
@@ -209,11 +214,11 @@ def main():
         ax.bar(np.arange(5) + (i - 1.5) * w,
                [rows[r][k]['mean'] for r in REGIMES], w,
                yerr=[rows[r][k]['sd'] for r in REGIMES], capsize=3,
-               label=k, color=COLOURS[k])
+               label=LABELS[k], color=COLOURS[k])
     ax.set_xticks(range(5)); ax.set_xticklabels(REGIMES)
     ax.set_xlabel('Simulated regime')
     ax.set_ylabel('Cross-validated RMSE (log$_{10}$ copies/mL)')
-    ax.legend(ncol=4, frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.16))
+    ax.legend(ncol=4, frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.16), fontsize=9)
     fig.tight_layout(); fig.savefig(fig_path(1), dpi=200); fig.savefig(fig_path(1).replace('.png', '.pdf')); plt.close(fig)
 
     print('  sensitivity grid ...')
@@ -227,7 +232,7 @@ def main():
                         extent=[GRID[0], GRID[-1], GRID[0], GRID[-1]], aspect='auto')
     axes[0].contour(GRID, GRID, rel, levels=[0], colors='k', linewidths=1.6)
     axes[0].plot(GRID, GRID, '--', color='0.4', lw=0.9)
-    axes[0].set_title('Relative RMSE, $\\Delta$Ct vs naive (%)')
+    axes[0].set_title('RMSE change, M2 ($\\Delta$Ct) vs M1 (%)')
     fig.colorbar(im, ax=axes[0], extend='max')   # surface reaches +291%
     # Same estimator colours as Figures 1 and 3, so a reader does not have to
     # re-learn the palette between panels.
@@ -241,7 +246,7 @@ def main():
                    extent=[GRID[0], GRID[-1], GRID[0], GRID[-1]], aspect='auto')
     axes[1].plot(GRID, GRID, '--', color='0.9', lw=0.9)
     axes[1].set_title('Best-performing estimator')
-    axes[1].legend(handles=[Patch(facecolor=COLOURS[l], label=l) for l in labs],
+    axes[1].legend(handles=[Patch(facecolor=COLOURS[l], label=LABELS[l]) for l in labs],
                    frameon=False, fontsize=8, loc='upper center', ncol=len(labs),
                    bbox_to_anchor=(0.5, -0.18))
     for ax in axes:
@@ -275,7 +280,7 @@ def main():
     for k in names:
         axes[0].errorbar(NS, [ss_out['favourable'][n][k]['mean'] for n in NS],
                          yerr=[ss_out['favourable'][n][k]['mcse'] for n in NS],
-                         fmt='o-', label=k, color=COLOURS[k], ms=4,
+                         fmt='o-', label=LABELS[k], color=COLOURS[k], ms=4,
                          elinewidth=0.8, capsize=2)
     axes[0].set_ylabel('CV RMSE (log$_{10}$)')
     axes[0].set_title('Cross-validated error')
