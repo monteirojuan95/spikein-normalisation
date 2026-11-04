@@ -53,11 +53,12 @@ Requires Python 3.9 or later. The pinned versions in `requirements.txt` are
 those the archived results were produced with, recorded in
 `results/run_metadata.json`.
 
-Two seeds are used: `SEED = 20260728` in `run_analysis.py` and
-`run_robustness.py`, and `SEED = 20260729` in `run_validation.py`;
-`run_calibration.py` is deterministic and uses none. Every CSV in `results/`
-reproduces bit-for-bit, and has been checked both on the pinned versions and on
-Python 3.12 with NumPy 2.4. Figure PNGs are not byte-reproducible across
+Seeds: `SEED = 20260728` in `run_analysis.py` and `run_robustness.py`,
+`20260729` in `run_validation.py`, `20261104` in `run_decision.py` and
+`20261105` in `run_paradigm.py`; `run_calibration.py` is deterministic and uses
+none. Every CSV in `results/` reproduces bit-for-bit; the v1.3 outputs have been
+checked on the pinned versions, on Python 3.12 with NumPy 2.4 and on Python 3.13
+with NumPy 2.5. Figure PNGs are not byte-reproducible across
 Matplotlib versions, but the numbers they are drawn from are.
 
 ## Figures and tables
@@ -148,11 +149,14 @@ src/spikein.py      generative model, estimator family, cross-validation,
 src/robustness.py   generative model with assumption violations
 src/assess.py       decision tool for your own assay
 src/calibrate.py    published dispersion values and unit conversions
-run_all.py          runs all four stages in order
-run_analysis.py     driver; Table 2 and Figures 1-3
+run_all.py          runs all six stages in order
+run_analysis.py     driver; Table 3, Figures 1-3, Table S1
 run_robustness.py   driver; Figure 4
-run_validation.py   driver; Table 3
-run_calibration.py  driver; Table 4
+run_paradigm.py     driver; Table 4, Table S3
+run_validation.py   driver; Table 5
+run_decision.py     driver; Table 6, Table S2
+run_calibration.py  driver; Table 2
+tests/              checks for the decision procedure
 requirements.txt    pinned dependencies
 results/            archived outputs; committed, so the release is self-contained
 ```
