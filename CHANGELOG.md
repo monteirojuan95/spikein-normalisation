@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.0 — unreleased
+## 1.4.0 — 2026-11-04
 
 Revision for submission to Chemometrics and Intelligent Laboratory Systems.
 Results of v1.3 (Tables 3 and 2 of the new manuscript, Figures 1-4) are
@@ -19,6 +19,9 @@ unchanged and reproduce bit-for-bit.
   (inverse vs classical calibration, Deming), `tests/test_assess.py`.
 - Figures are also written as PDF with embedded TrueType fonts; legend labels
   follow the manuscript's estimator names; Figure 4 legend moved below the axes.
+- `CITATION.cff`: version 1.4.0. The version-specific `doi` field is removed
+  because Zenodo mints the DOI of this release on publication; v1.3.1 remains
+  citable as 10.5281/zenodo.21694734.
 - Every CSV, old and new, verified bit-for-bit on the pinned versions
   (Python 3.12, NumPy 2.0.2) and on Python 3.13 with NumPy 2.5.
 
