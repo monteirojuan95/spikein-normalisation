@@ -9,10 +9,12 @@ so that it starts from its own seeded generator; this is what makes the
 archived outputs reproducible stage by stage, and it means any single stage can
 equally be run on its own.
 
-    run_analysis.py       Table 2, Figures 1-3
+    run_analysis.py       Table 3, Figures 1-3, Supplementary Table S1
     run_robustness.py     Figure 4
-    run_validation.py     Table 3
-    run_calibration.py    Table 4
+    run_paradigm.py       Table 4, Supplementary Table S3
+    run_validation.py     Table 5
+    run_decision.py       Table 6, Supplementary Table S2
+    run_calibration.py    Table 2
 
 `--quick` is passed to the two stages that accept it. run_validation.py has no
 reduced mode; lower N_STUDIES or N_BOOT at the top of that file instead.
@@ -29,7 +31,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STAGES = [
     ('run_analysis.py', True),
     ('run_robustness.py', True),
+    ('run_paradigm.py', False),
     ('run_validation.py', False),
+    ('run_decision.py', False),
     ('run_calibration.py', False),
 ]
 

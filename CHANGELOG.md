@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.0 — unreleased
+
+Revision for submission to Chemometrics and Intelligent Laboratory Systems.
+Results of v1.3 (Tables 3 and 2 of the new manuscript, Figures 1-4) are
+unchanged and reproduce bit-for-bit.
+
+- `src/assess.py`: unequal replicates per aliquot handled through mean(1/n_j)
+  (v1.3 used 1/mean(n_j), biased when unbalanced); `r_routine` separates the
+  routine replicate number from the validation design; hierarchical bootstrap
+  re-estimates tau_C^2 in each resample (the conditional bootstrap is kept and
+  reproduces v1.3 exactly); the recommendation now uses a calibrated t-test of
+  D = 0 (Pitman-Morgan type) instead of whether the bootstrap interval
+  excludes zero.
+- `run_validation.py`: exact-boundary setting, interval coverage, decisions by
+  test and by interval, 1000 studies per setting.
+- New `run_decision.py` (end-to-end decision analysis), `run_paradigm.py`
+  (inverse vs classical calibration, Deming), `tests/test_assess.py`.
+- Figures are also written as PDF.
+
 ## 1.3.2 — 2026-07-30
 
 Metadata only. No code, no results, no figures changed.

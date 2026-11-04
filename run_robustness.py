@@ -106,7 +106,7 @@ def main():
     ax.set_xlabel('Change in RMSE relative to ignoring the control (%)')
     ax.set_title('Intermediate regime ($\\sigma_s$ = 0.35, $\\sigma_c$ = 0.25)')
     ax.legend(frameon=False)
-    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); fig.savefig(f'{OUT}/figure4.pdf'); plt.close(fig)
     print(f'done -> {OUT}/robustness.csv, {OUT}/figure4.png')
 
 

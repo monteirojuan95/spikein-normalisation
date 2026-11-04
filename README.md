@@ -35,10 +35,13 @@ python3 run_all.py                # everything, ~4 min
 each starts from its own seeded generator. Any stage can equally be run alone:
 
 ```bash
-python3 run_analysis.py           # Table 2, Figures 1-3, ~50 s
+python3 run_analysis.py           # Table 3, Figures 1-3, ~50 s
 python3 run_robustness.py         # Figure 4, assumption violations, ~10 s
-python3 run_validation.py         # Table 3, validation designs, ~2 min
-python3 run_calibration.py        # Table 4, published dispersions, instant
+python3 run_paradigm.py           # Table 4, calibration paradigms, ~5 s
+python3 run_validation.py         # Table 5, validation designs, ~15 s
+python3 run_decision.py           # Table 6, end-to-end decision analysis, ~15 s
+python3 run_calibration.py        # Table 2, published dispersions, instant
+python3 tests/test_assess.py      # checks for the decision procedure
 ```
 
 Add `--quick` to `run_all.py`, `run_analysis.py` or `run_robustness.py` for a
@@ -66,13 +69,24 @@ so that renumbering is a single edit rather than a search across scripts.
 
 | # | file | produced by | content |
 |---|---|---|---|
-| Figure 1 | `figure1.png` | `run_analysis.py` | Cross-validated RMSE of the four estimators across five representative regimes |
-| Figure 2 | `figure2.png` | `run_analysis.py` | Two-parameter sensitivity grid over 256 (σs, σc) combinations, with the zero-benefit contour |
-| Figure 3 | `figure3.png` | `run_analysis.py` | Dependence of estimator ranking on study size, with the paired M2-M3 contrast alongside |
-| Figure 4 | `figure4.png` | `run_robustness.py` | Change in RMSE under each departure from the model's assumptions |
-| Table 2 | `table2.csv` | `run_analysis.py` | RMSE by estimator and regime |
-| Table 3 | `table3.csv` | `run_validation.py` | Recovery of the variance components and the decision contrast in simulated validation designs |
-| Table 4 | `table4.csv` | `run_calibration.py` | Published control-channel dispersions on the log₁₀ scale |
+| Figure 1 | `figure1.png`, `.pdf` | `run_analysis.py` | Cross-validated RMSE of the four estimators across five representative regimes |
+| Figure 2 | `figure2.png`, `.pdf` | `run_analysis.py` | Two-parameter sensitivity grid over 256 (σs, σc) combinations, with the zero-benefit contour |
+| Figure 3 | `figure3.png`, `.pdf` | `run_analysis.py` | Dependence of estimator ranking on study size, with the paired M2-M3 contrast alongside |
+| Figure 4 | `figure4.png`, `.pdf` | `run_robustness.py` | Change in RMSE under each departure from the model's assumptions |
+| Table 2 | `table4.csv` | `run_calibration.py` | Published control-channel dispersions on the log₁₀ scale |
+| Table 3 | `table2.csv` | `run_analysis.py` | RMSE by estimator and regime |
+| Table 4 | `paradigm.csv` | `run_paradigm.py` | Inverse vs classical calibration, with calibrator uncertainty and Deming fits |
+| Table 5 | `table3.csv` | `run_validation.py` | Recovery of the variance components, test of D = 0 and bootstrap coverage in simulated validation designs |
+| Table 6 | `decision.csv` | `run_decision.py` | End-to-end cost of each policy relative to an oracle, processed calibrators vs clean standards |
+| Table S1 | `analytic_check.csv` | `run_analysis.py` | Closed-form vs simulated RMSE |
+| Table S2 | `decision.csv` | `run_decision.py` | Decision analysis at n = 15 and with the M2 default |
+| Table S3 | `paradigm.csv` | `run_paradigm.py` | Paradigm comparison, all cells |
+
+CSV file names are kept from version 1.3 so that archived results remain
+comparable; the manuscript table numbers changed in version 1.4 because tables
+are numbered in order of first citation. `decision_power.csv` gives the share of
+validation panels in which the test reaches a decision for 24, 48 and 96
+aliquots.
 
 **There is no Figure 5.** Earlier versions of this repository generated a
 parameter-plane figure placing published assays as arcs in (σs, σc). That figure

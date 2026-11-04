@@ -214,7 +214,7 @@ def main():
     ax.set_xlabel('Simulated regime')
     ax.set_ylabel('Cross-validated RMSE (log$_{10}$ copies/mL)')
     ax.legend(ncol=4, frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.16))
-    fig.tight_layout(); fig.savefig(fig_path(1), dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(1), dpi=200); fig.savefig(fig_path(1).replace('.png', '.pdf')); plt.close(fig)
 
     print('  sensitivity grid ...')
     rel, rel_se, best = run_grid(ng, rg, rng)
@@ -247,7 +247,7 @@ def main():
     for ax in axes:
         ax.set_xlabel('Shared processing variability  $\\sigma_s$ (log$_{10}$)')
         ax.set_ylabel('Control-specific variability  $\\sigma_c$ (log$_{10}$)')
-    fig.tight_layout(); fig.savefig(fig_path(2), dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(2), dpi=200); fig.savefig(fig_path(2).replace('.png', '.pdf')); plt.close(fig)
 
     print('  sample-size dependence ...')
     ss_out, ss_raw = run_samplesize(nss, rss, rng)
@@ -297,7 +297,7 @@ def main():
         ax.set_xscale('log'); ax.set_xticks(NS)
         ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
         ax.set_xlabel('Samples per study (n)')
-    fig.tight_layout(); fig.savefig(fig_path(3), dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(3), dpi=200); fig.savefig(fig_path(3).replace('.png', '.pdf')); plt.close(fig)
 
     with open(f'{OUT}/run_metadata.json', 'w') as f:
         json.dump({'seed': SEED, 'numpy': np.__version__,
