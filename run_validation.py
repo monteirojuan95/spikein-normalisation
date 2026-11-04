@@ -33,16 +33,20 @@ N_UNITS = 24          # independently processed aliquots per validation study
 N_REP = 3             # technical measurements of each channel within aliquot
 SD_TARGET = 0.15      # target-specific perturbation, baseline value
 
-N_STUDIES = 500       # independent validation studies per setting
+N_STUDIES = 1000      # independent validation studies per setting
 N_BOOT = 2000         # bootstrap resamples of aliquots within a study
 SEED = 20260729
 
 # (label, sigma_s, sigma_c) -- favourable is regime A, unfavourable regime D,
 # boundary chosen so that theta* sits just below one half.
+# 'Near boundary' is the version-1 boundary setting (D = -0.0036, theta* = 0.490).
+# 'Exact boundary' puts D at exactly zero: sigma_s^2 = sigma_c^2 + tau_C^2/beta^2.
+SD_S_EXACT = float(np.sqrt(0.30 ** 2 + sp.SD_MEAS ** 2 / sp.BETA ** 2))
 SETTINGS = [
-    ('Favourable',   0.60, 0.10),
-    ('Boundary',     0.30, 0.30),
-    ('Unfavourable', 0.10, 0.50),
+    ('Favourable',     0.60,       0.10),
+    ('Near boundary',  0.30,       0.30),
+    ('Exact boundary', SD_S_EXACT, 0.30),
+    ('Unfavourable',   0.10,       0.50),
 ]
 
 
@@ -94,30 +98,49 @@ def classify(ci):
     return 'indeterminate'
 
 
+def classify_test(out, alpha=0.05):
+    """Decision implied by the variance test, matching assess.py."""
+    if out.test_p < alpha:
+        return 'supports' if out.test_t > 0 else 'against'
+    return 'indeterminate'
+
+
 def run_setting(label, sd_shared, sd_ctrl, n_studies=N_STUDIES, base_seed=SEED):
     tru = truth(sd_shared, sd_ctrl)
     rows, tally = [], {'supports': 0, 'against': 0, 'indeterminate': 0}
 
+    cover = {'hierarchical': 0, 'conditional': 0}
+    tally_cond = {'supports': 0, 'against': 0, 'indeterminate': 0}
+    tally_ci = {'supports': 0, 'against': 0, 'indeterminate': 0}
     for k in range(n_studies):
         rng = np.random.default_rng([base_seed, k])
         ct_T, ct_C, unit, rep = simulate_validation_design(
             sd_shared, sd_ctrl, rng=rng)
-        out = assess_normalisation(ct_T, ct_C, unit, rep,
-                                   n_boot=N_BOOT, seed=base_seed + k)
-        d = classify(out.contrast_ci)
+        out = assess_normalisation(ct_T, ct_C, unit, rep, n_boot=N_BOOT,
+                                   seed=base_seed + k, bootstrap='hierarchical')
+        cond = assess_normalisation(ct_T, ct_C, unit, rep, n_boot=N_BOOT,
+                                    seed=base_seed + k, bootstrap='conditional')
+        d = classify_test(out)
         tally[d] += 1
+        tally_ci[classify(out.contrast_ci)] += 1
+        tally_cond[classify(cond.contrast_ci)] += 1
+        for name, o in (('hierarchical', out), ('conditional', cond)):
+            cover[name] += int(o.contrast_ci[0] <= tru['contrast'] <= o.contrast_ci[1])
         rows.append({'setting': label, 'study': k,
                      'sigma_s2': out.sigma_s2, 'sigma_c2': out.sigma_c2,
                      'm_c': out.tau_C2 / out.beta ** 2,
                      'theta_star': out.theta_star, 'contrast': out.contrast,
                      'ci_lo': out.contrast_ci[0], 'ci_hi': out.contrast_ci[1],
+                     'ci_lo_cond': cond.contrast_ci[0], 'ci_hi_cond': cond.contrast_ci[1],
                      'decision': d})
 
     a = {k: np.array([r[k] for r in rows], float)
          for k in ('sigma_s2', 'sigma_c2', 'm_c', 'theta_star',
-                   'contrast', 'ci_lo', 'ci_hi')}
-    # sign of D recovered correctly, judged against the true sign
-    want = 'supports' if tru['contrast'] > 0 else 'against'
+                   'contrast', 'ci_lo', 'ci_hi', 'ci_lo_cond', 'ci_hi_cond')}
+    # sign of D recovered correctly, judged against the true sign;
+    # at exactly D = 0 there is no correct sign and both calls count as wrong
+    want = ('supports' if tru['contrast'] > 1e-12 else
+            'against' if tru['contrast'] < -1e-12 else None)
     summary = {
         'setting': label, 'sigma_s': sd_shared, 'sigma_c': sd_ctrl,
         'true_sigma_s2': tru['sigma_s2'], 'true_sigma_c2': tru['sigma_c2'],
@@ -127,9 +150,19 @@ def run_setting(label, sd_shared, sd_ctrl, n_studies=N_STUDIES, base_seed=SEED):
         'pct_supports': 100.0 * tally['supports'] / n_studies,
         'pct_against': 100.0 * tally['against'] / n_studies,
         'pct_indeterminate': 100.0 * tally['indeterminate'] / n_studies,
-        'pct_correct_sign': 100.0 * tally[want] / n_studies,
-        'pct_wrong_sign': 100.0 * tally['supports' if want == 'against'
-                                        else 'against'] / n_studies,
+        'pct_correct_sign': (100.0 * tally[want] / n_studies) if want else 0.0,
+        'pct_wrong_sign': (100.0 * (tally['supports'] + tally['against']) / n_studies
+                           if want is None else
+                           100.0 * tally['supports' if want == 'against'
+                                         else 'against'] / n_studies),
+        'coverage_hier': 100.0 * cover['hierarchical'] / n_studies,
+        'coverage_cond': 100.0 * cover['conditional'] / n_studies,
+        'pct_indeterminate_cond': 100.0 * tally_cond['indeterminate'] / n_studies,
+        'pct_supports_ci': 100.0 * tally_ci['supports'] / n_studies,
+        'pct_against_ci': 100.0 * tally_ci['against'] / n_studies,
+        'pct_indeterminate_ci': 100.0 * tally_ci['indeterminate'] / n_studies,
+        'pct_supports_cond': 100.0 * tally_cond['supports'] / n_studies,
+        'pct_against_cond': 100.0 * tally_cond['against'] / n_studies,
         'frac_sigma_s2_at_floor': float(np.mean(a['sigma_s2'] <= 0)),
         'frac_sigma_c2_at_floor': float(np.mean(a['sigma_c2'] <= 0)),
     }
@@ -145,7 +178,11 @@ COLS = ['setting', 'sigma_s', 'sigma_c', 'true_contrast', 'true_theta_star',
         'mean_contrast', 'sd_contrast', 'mean_ci_lo', 'mean_ci_hi',
         'pct_supports', 'pct_against', 'pct_indeterminate',
         'pct_correct_sign', 'pct_wrong_sign',
-        'frac_sigma_s2_at_floor', 'frac_sigma_c2_at_floor', 'n_studies']
+        'frac_sigma_s2_at_floor', 'frac_sigma_c2_at_floor',
+        'coverage_hier', 'coverage_cond', 'pct_indeterminate_cond',
+        'pct_supports_ci', 'pct_against_ci', 'pct_indeterminate_ci',
+        'pct_supports_cond', 'pct_against_cond',
+        'mean_ci_lo_cond', 'mean_ci_hi_cond', 'n_studies']
 
 
 def main():
@@ -161,7 +198,8 @@ def main():
               f"theta*_true={s['true_theta_star']:.3f}  "
               f"correct={s['pct_correct_sign']:.1f}%  "
               f"wrong={s['pct_wrong_sign']:.1f}%  "
-              f"indet={s['pct_indeterminate']:.1f}%")
+              f"indet={s['pct_indeterminate']:.1f}%  "
+              f"cover hier={s['coverage_hier']:.1f}% cond={s['coverage_cond']:.1f}%")
 
     with open(f'{OUT}/table3.csv', 'w') as f:
         f.write(','.join(COLS) + '\n')
@@ -171,7 +209,7 @@ def main():
                 for c in COLS) + '\n')
 
     keys = ['setting', 'study', 'sigma_s2', 'sigma_c2', 'm_c', 'theta_star',
-            'contrast', 'ci_lo', 'ci_hi', 'decision']
+            'contrast', 'ci_lo', 'ci_hi', 'ci_lo_cond', 'ci_hi_cond', 'decision']
     with open(f'{OUT}/validation_studies.csv', 'w') as f:
         f.write(','.join(keys) + '\n')
         for r in all_rows:

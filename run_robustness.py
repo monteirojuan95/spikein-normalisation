@@ -16,6 +16,8 @@ import argparse, os, sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+matplotlib.rcParams['pdf.fonttype'] = 42   # embed TrueType fonts in vector output
+matplotlib.rcParams['ps.fonttype'] = 42
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -105,8 +107,8 @@ def main():
     ax.set_yticks(y); ax.set_yticklabels(scen); ax.invert_yaxis()
     ax.set_xlabel('Change in RMSE relative to ignoring the control (%)')
     ax.set_title('Intermediate regime ($\\sigma_s$ = 0.35, $\\sigma_c$ = 0.25)')
-    ax.legend(frameon=False)
-    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); plt.close(fig)
+    ax.legend(frameon=False, ncol=2, loc='upper center', bbox_to_anchor=(0.5, -0.14))
+    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); fig.savefig(f'{OUT}/figure4.pdf'); plt.close(fig)
     print(f'done -> {OUT}/robustness.csv, {OUT}/figure4.png')
 
 

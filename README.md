@@ -35,10 +35,13 @@ python3 run_all.py                # everything, ~4 min
 each starts from its own seeded generator. Any stage can equally be run alone:
 
 ```bash
-python3 run_analysis.py           # Table 2, Figures 1-3, ~50 s
+python3 run_analysis.py           # Table 3, Figures 1-3, ~50 s
 python3 run_robustness.py         # Figure 4, assumption violations, ~10 s
-python3 run_validation.py         # Table 3, validation designs, ~2 min
-python3 run_calibration.py        # Table 4, published dispersions, instant
+python3 run_paradigm.py           # Table 4, calibration paradigms, ~5 s
+python3 run_validation.py         # Table 5, validation designs, ~15 s
+python3 run_decision.py           # Table 6, end-to-end decision analysis, ~15 s
+python3 run_calibration.py        # Table 2, published dispersions, instant
+python3 tests/test_assess.py      # checks for the decision procedure
 ```
 
 Add `--quick` to `run_all.py`, `run_analysis.py` or `run_robustness.py` for a
@@ -50,11 +53,13 @@ Requires Python 3.9 or later. The pinned versions in `requirements.txt` are
 those the archived results were produced with, recorded in
 `results/run_metadata.json`.
 
-Two seeds are used: `SEED = 20260728` in `run_analysis.py` and
-`run_robustness.py`, and `SEED = 20260729` in `run_validation.py`;
-`run_calibration.py` is deterministic and uses none. Every CSV in `results/`
-reproduces bit-for-bit, and has been checked both on the pinned versions and on
-Python 3.12 with NumPy 2.4. Figure PNGs are not byte-reproducible across
+Seeds: `SEED = 20260728` in `run_analysis.py` and `run_robustness.py`,
+`20260729` in `run_validation.py`, `20261104` in `run_decision.py` and
+`20261105` in `run_paradigm.py`; `run_calibration.py` is deterministic and uses
+none. Every CSV in `results/` reproduces bit-for-bit. All outputs of v1.4,
+including the new analyses, have been checked on the pinned versions (Python 3.12,
+NumPy 2.0.2) and on Python 3.13 with NumPy 2.5; the v1.3 outputs were also
+checked on Python 3.12 with NumPy 2.4. Figure PNGs are not byte-reproducible across
 Matplotlib versions, but the numbers they are drawn from are.
 
 ## Figures and tables
@@ -66,13 +71,24 @@ so that renumbering is a single edit rather than a search across scripts.
 
 | # | file | produced by | content |
 |---|---|---|---|
-| Figure 1 | `figure1.png` | `run_analysis.py` | Cross-validated RMSE of the four estimators across five representative regimes |
-| Figure 2 | `figure2.png` | `run_analysis.py` | Two-parameter sensitivity grid over 256 (σs, σc) combinations, with the zero-benefit contour |
-| Figure 3 | `figure3.png` | `run_analysis.py` | Dependence of estimator ranking on study size, with the paired M2-M3 contrast alongside |
-| Figure 4 | `figure4.png` | `run_robustness.py` | Change in RMSE under each departure from the model's assumptions |
-| Table 2 | `table2.csv` | `run_analysis.py` | RMSE by estimator and regime |
-| Table 3 | `table3.csv` | `run_validation.py` | Recovery of the variance components and the decision contrast in simulated validation designs |
-| Table 4 | `table4.csv` | `run_calibration.py` | Published control-channel dispersions on the log₁₀ scale |
+| Figure 1 | `figure1.png`, `.pdf` | `run_analysis.py` | Cross-validated RMSE of the four estimators across five representative regimes |
+| Figure 2 | `figure2.png`, `.pdf` | `run_analysis.py` | Two-parameter sensitivity grid over 256 (σs, σc) combinations, with the zero-benefit contour |
+| Figure 3 | `figure3.png`, `.pdf` | `run_analysis.py` | Dependence of estimator ranking on study size, with the paired M2-M3 contrast alongside |
+| Figure 4 | `figure4.png`, `.pdf` | `run_robustness.py` | Change in RMSE under each departure from the model's assumptions |
+| Table 2 | `table4.csv` | `run_calibration.py` | Published control-channel dispersions on the log₁₀ scale |
+| Table 3 | `table2.csv` | `run_analysis.py` | RMSE by estimator and regime |
+| Table 4 | `paradigm.csv` | `run_paradigm.py` | Inverse vs classical calibration, with calibrator uncertainty and Deming fits |
+| Table 5 | `table3.csv` | `run_validation.py` | Recovery of the variance components, test of D = 0 and bootstrap coverage in simulated validation designs |
+| Table 6 | `decision.csv` | `run_decision.py` | End-to-end cost of each policy relative to an oracle, processed calibrators vs clean standards |
+| Table S1 | `analytic_check.csv` | `run_analysis.py` | Closed-form vs simulated RMSE |
+| Table S2 | `decision.csv` | `run_decision.py` | Decision analysis at n = 15 and with the M2 default |
+| Table S3 | `paradigm.csv` | `run_paradigm.py` | Paradigm comparison, all cells |
+
+CSV file names are kept from version 1.3 so that archived results remain
+comparable; the manuscript table numbers changed in version 1.4 because tables
+are numbered in order of first citation. `decision_power.csv` gives the share of
+validation panels in which the test reaches a decision for 24, 48 and 96
+aliquots.
 
 **There is no Figure 5.** Earlier versions of this repository generated a
 parameter-plane figure placing published assays as arcs in (σs, σc). That figure
@@ -134,11 +150,14 @@ src/spikein.py      generative model, estimator family, cross-validation,
 src/robustness.py   generative model with assumption violations
 src/assess.py       decision tool for your own assay
 src/calibrate.py    published dispersion values and unit conversions
-run_all.py          runs all four stages in order
-run_analysis.py     driver; Table 2 and Figures 1-3
+run_all.py          runs all six stages in order
+run_analysis.py     driver; Table 3, Figures 1-3, Table S1
 run_robustness.py   driver; Figure 4
-run_validation.py   driver; Table 3
-run_calibration.py  driver; Table 4
+run_paradigm.py     driver; Table 4, Table S3
+run_validation.py   driver; Table 5
+run_decision.py     driver; Table 6, Table S2
+run_calibration.py  driver; Table 2
+tests/              checks for the decision procedure
 requirements.txt    pinned dependencies
 results/            archived outputs; committed, so the release is self-contained
 ```
