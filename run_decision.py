@@ -107,6 +107,31 @@ def one_lab(sd_s, sd_c, n, rng):
 POLICIES = {'proc': ['M1', 'M2', 'M3', 'rule'], 'clean': ['M1', 'M2', 'rule', 'ruleM2']}
 
 
+POWER_J = [24, 48, 96]
+POWER_SETTINGS = [('theta* 0.649', 0.35, 0.25), ('theta* 0.331', 0.25, 0.35)]
+N_POWER = 1000
+
+
+def power_by_aliquots():
+    """Share of validation studies in which the test reaches a decision."""
+    rows = []
+    for J in POWER_J:
+        for si, (label, ss, sc) in enumerate(POWER_SETTINGS):
+            hits = 0
+            for k in range(N_POWER):
+                rng = np.random.default_rng([SEED, 99, J, si, k])
+                ct_T, ct_C, unit, _ = simulate_validation_design(ss, sc, n_units=J, rng=rng)
+                mT, mC, n, _, ssC = _unit_stats(ct_T, ct_C, unit)
+                _, _, p = variance_test(mT, mC, n, ssC.sum() / (n - 1).sum())
+                hits += p < ALPHA
+            rows.append((label, J, 100.0 * hits / N_POWER))
+            print(f'power  {label:13s} J={J:3d}  decisive {100.0 * hits / N_POWER:5.1f}%')
+    with open(f'{OUT}/decision_power.csv', 'w') as f:
+        f.write('setting,aliquots,pct_decisive\n')
+        for r in rows:
+            f.write(f'{r[0]},{r[1]},{r[2]:.1f}\n')
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     summary, labs = [], []
@@ -155,7 +180,8 @@ def main():
         for r in labs:
             f.write(','.join(r[k] if isinstance(r[k], str) else f'{r[k]:.6g}'
                              for k in keys) + '\n')
-    print(f'done -> {OUT}/decision.csv, {OUT}/decision_labs.csv')
+    power_by_aliquots()
+    print(f'done -> {OUT}/decision.csv, {OUT}/decision_labs.csv, {OUT}/decision_power.csv')
 
 
 if __name__ == '__main__':
