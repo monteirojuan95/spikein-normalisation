@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.5.0 — 2026-11-07
+
+Application to field surveillance data, for the BMC Bioinformatics submission.
+No existing code path changed; every result of v1.4.0 (Tables 2-6, Figures 1-4,
+Supplementary Tables S1-S3) is unchanged.
+
+- New `run_field.py`: applies `src/assess.py`, unchanged, to the public
+  CentrEau-COVID Quebec City wastewater dataset (v1.04, CC-BY 4.0,
+  doi:10.5281/zenodo.5597158), with BRSV as the control and SARS-CoV-2 N2 and
+  PMMoV as targets. Writes `results/field_table.csv` (Table 7),
+  `results/field_external.csv`, `results/field_meta.json` and Figure 5.
+  The dataset is not redistributed; `run_field.py` documents how to obtain it
+  and records the MD5 of the file it read.
+- `run_all.py` runs the new stage when the dataset is present and skips it
+  with a message otherwise.
+- `requirements.txt`: adds pandas 2.2.3, needed only by `run_field.py`.
+- `CITATION.cff`: version 1.5.0.
+- Figures 1-5 are drawn in the ltc 'heatmap0' palette. The diverging scale of
+  Figure 2 is now centred at zero, so the neutral colour marks the zero-benefit
+  boundary (the RdBu scale of earlier versions was centred at +50%). Figures
+  are also written as EPS. No number changed: every CSV and
+  `run_metadata.json` is byte-identical before and after.
+- Field outputs are written to 10 significant digits and reproduce bit-for-bit
+  under NumPy 2.0.2 with pandas 2.2.3 and under NumPy 2.5.3 with pandas 3.0.5.
+
 ## 1.4.0 — 2026-11-04
 
 Revision for submission to Chemometrics and Intelligent Laboratory Systems.

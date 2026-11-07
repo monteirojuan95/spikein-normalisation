@@ -15,6 +15,8 @@ equally be run on its own.
     run_validation.py     Table 5
     run_decision.py       Table 6, Supplementary Table S2
     run_calibration.py    Table 2
+    run_field.py          Table 7, Figure 5 (needs the public field dataset;
+                          skipped with a message if it is absent)
 
 `--quick` is passed to the two stages that accept it. run_validation.py has no
 reduced mode; lower N_STUDIES or N_BOOT at the top of that file instead.
@@ -35,6 +37,7 @@ STAGES = [
     ('run_validation.py', False),
     ('run_decision.py', False),
     ('run_calibration.py', False),
+    ('run_field.py', False),
 ]
 
 
@@ -51,6 +54,11 @@ def main():
             cmd.append('--quick')
         print(f'\n=== {" ".join(os.path.basename(c) for c in cmd[1:])}',
               flush=True)
+        if script == 'run_field.py' and not os.path.exists(
+                os.path.join(HERE, 'data', 'centreau_qc', 'WWMeasure.csv')):
+            print('field dataset not found in data/centreau_qc/; skipping '
+                  '(see run_field.py for how to obtain it)')
+            continue
         r = subprocess.run(cmd, cwd=HERE)
         if r.returncode:
             sys.exit(f'{script} failed with exit code {r.returncode}')

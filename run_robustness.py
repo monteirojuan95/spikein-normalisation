@@ -98,17 +98,17 @@ def main():
     ax.barh(y - 0.19, [r['M2_vs_M1_pct'] for r in b], 0.36,
             xerr=[r['M2_vs_M1_pct_mcse'] for r in b], capsize=2,
             error_kw=dict(lw=0.8, ecolor='0.25'),
-            label='M2 $\\Delta$Ct', color='#c0392b')
+            label='M2 $\\Delta$Ct', color='#AE2012')
     ax.barh(y + 0.19, [r['M3_vs_M1_pct'] for r in b], 0.36,
             xerr=[r['M3_vs_M1_pct_mcse'] for r in b], capsize=2,
             error_kw=dict(lw=0.8, ecolor='0.25'),
-            label='M3 estimated coefficient', color='#2980b9')
+            label='M3 estimated coefficient', color='#0A9396')
     ax.axvline(0, color='k', lw=0.9)
     ax.set_yticks(y); ax.set_yticklabels(scen); ax.invert_yaxis()
     ax.set_xlabel('Change in RMSE relative to ignoring the control (%)')
     ax.set_title('Intermediate regime ($\\sigma_s$ = 0.35, $\\sigma_c$ = 0.25)')
     ax.legend(frameon=False, ncol=2, loc='upper center', bbox_to_anchor=(0.5, -0.14))
-    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); fig.savefig(f'{OUT}/figure4.pdf'); plt.close(fig)
+    fig.tight_layout(); fig.savefig(f'{OUT}/figure4.png', dpi=200); fig.savefig(f'{OUT}/figure4.pdf'); fig.savefig(f'{OUT}/figure4.eps'); plt.close(fig)
     print(f'done -> {OUT}/robustness.csv, {OUT}/figure4.png')
 
 
