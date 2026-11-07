@@ -17,6 +17,11 @@ Supplementary Tables S1-S3) is unchanged.
   with a message otherwise.
 - `requirements.txt`: adds pandas 2.2.3, needed only by `run_field.py`.
 - `CITATION.cff`: version 1.5.0.
+- Figures 1-5 are drawn in the ltc 'heatmap0' palette. The diverging scale of
+  Figure 2 is now centred at zero, so the neutral colour marks the zero-benefit
+  boundary (the RdBu scale of earlier versions was centred at +50%). Figures
+  are also written as EPS. No number changed: every CSV and
+  `run_metadata.json` is byte-identical before and after.
 - Field outputs are written to 10 significant digits and reproduce bit-for-bit
   under NumPy 2.0.2 with pandas 2.2.3 and under NumPy 2.5.3 with pandas 3.0.5.
 

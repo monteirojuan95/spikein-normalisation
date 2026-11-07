@@ -35,8 +35,13 @@ NS = [15, 20, 30, 40, 60, 100, 200]
 # Legend labels follow the manuscript's names for the estimators.
 LABELS = {'M1 naive': 'M1 target only', 'M2 dCt': 'M2 $\\Delta$Ct',
           'M3 partial': 'M3 estimated coefficient', 'M4 interaction': 'M4 interaction'}
-COLOURS = {'M1 naive': '#9e9e9e', 'M2 dCt': '#c0392b', 'M3 partial': '#2980b9',
-           'M4 interaction': '#8e44ad'}
+# Colours from the ltc 'heatmap0' palette (#001219 #005F73 #0A9396 #94D2BD #E9D8A6
+# #EE9B00 #CA6702 #AE2012 #9B2226). M1, the reference, takes the near-neutral navy;
+# all estimator pairs remain separable under simulated deutan, protan and tritan
+# vision (OKLab delta E >= 17).
+COLOURS = {'M1 naive': '#001219', 'M2 dCt': '#AE2012', 'M3 partial': '#0A9396',
+           'M4 interaction': '#EE9B00'}
+DIVERGING = ['#005F73', '#0A9396', '#94D2BD', '#E9D8A6', '#EE9B00', '#CA6702', '#AE2012', '#9B2226']
 
 # Manuscript figure numbering, in order of first citation in the text.
 # Numbers live here so that renumbering is a one-line change; the file names
@@ -219,7 +224,7 @@ def main():
     ax.set_xlabel('Simulated regime')
     ax.set_ylabel('Cross-validated RMSE (log$_{10}$ copies/mL)')
     ax.legend(ncol=4, frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.16), fontsize=9)
-    fig.tight_layout(); fig.savefig(fig_path(1), dpi=200); fig.savefig(fig_path(1).replace('.png', '.pdf')); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(1), dpi=200); fig.savefig(fig_path(1).replace('.png', '.pdf')); fig.savefig(fig_path(1).replace('.png', '.eps')); plt.close(fig)
 
     print('  sensitivity grid ...')
     rel, rel_se, best = run_grid(ng, rg, rng)
@@ -228,7 +233,10 @@ def main():
     print(f'    largest MCSE on the grid: {rel_se.max():.2f} points')
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.4))
-    im = axes[0].imshow(rel, origin='lower', cmap='RdBu_r', vmin=-100, vmax=200,
+    from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
+    div = LinearSegmentedColormap.from_list('heatmap0_div', DIVERGING)
+    im = axes[0].imshow(rel, origin='lower', cmap=div,
+                        norm=TwoSlopeNorm(vmin=-100, vcenter=0, vmax=200),   # zero at the neutral midpoint
                         extent=[GRID[0], GRID[-1], GRID[0], GRID[-1]], aspect='auto')
     axes[0].contour(GRID, GRID, rel, levels=[0], colors='k', linewidths=1.6)
     axes[0].plot(GRID, GRID, '--', color='0.4', lw=0.9)
@@ -252,7 +260,7 @@ def main():
     for ax in axes:
         ax.set_xlabel('Shared processing variability  $\\sigma_s$ (log$_{10}$)')
         ax.set_ylabel('Control-specific variability  $\\sigma_c$ (log$_{10}$)')
-    fig.tight_layout(); fig.savefig(fig_path(2), dpi=200); fig.savefig(fig_path(2).replace('.png', '.pdf')); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(2), dpi=200); fig.savefig(fig_path(2).replace('.png', '.pdf')); fig.savefig(fig_path(2).replace('.png', '.eps')); plt.close(fig)
 
     print('  sample-size dependence ...')
     ss_out, ss_raw = run_samplesize(nss, rss, rng)
@@ -290,7 +298,7 @@ def main():
     pct = np.array([fav[n]['M2_vs_M3_pct'] for n in NS], float)
     se = np.array([fav[n]['M2_vs_M3_pct_mcse'] for n in NS], float)
     axes[1].axhline(0, color='0.6', lw=0.9)
-    axes[1].errorbar(NS, pct, yerr=2 * se, fmt='o-', color='#34495e', ms=4,
+    axes[1].errorbar(NS, pct, yerr=2 * se, fmt='o-', color='#005F73', ms=4,
                      elinewidth=0.9, capsize=3)
     axes[1].set_ylabel('$\\Delta$Ct vs estimated coefficient (%)')
     axes[1].set_title('Paired contrast, M2 against M3')
@@ -302,7 +310,7 @@ def main():
         ax.set_xscale('log'); ax.set_xticks(NS)
         ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
         ax.set_xlabel('Samples per study (n)')
-    fig.tight_layout(); fig.savefig(fig_path(3), dpi=200); fig.savefig(fig_path(3).replace('.png', '.pdf')); plt.close(fig)
+    fig.tight_layout(); fig.savefig(fig_path(3), dpi=200); fig.savefig(fig_path(3).replace('.png', '.pdf')); fig.savefig(fig_path(3).replace('.png', '.eps')); plt.close(fig)
 
     with open(f'{OUT}/run_metadata.json', 'w') as f:
         json.dump({'seed': SEED, 'numpy': np.__version__,

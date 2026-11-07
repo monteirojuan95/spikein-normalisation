@@ -156,7 +156,8 @@ _fam = 'Inter' if any('Inter' == f.name for f in font_manager.fontManager.ttflis
 plt.rcParams.update({'font.family': _fam, 'font.size': 9, 'ps.fonttype': 42, 'axes.spines.top': False,
                      'axes.spines.right': False, 'axes.edgecolor': '#52514e', 'axes.labelcolor': '#0b0b0b',
                      'xtick.color': '#52514e', 'ytick.color': '#52514e', 'pdf.fonttype': 42})
-BLUE, ORANGE, INK, MUTED, GRID = '#34495e', '#2980b9', '#000000', '0.35', '0.9'
+# ltc 'heatmap0' palette, as in Figures 1-4
+BLUE, ORANGE, INK, MUTED, GRID = '#005F73', '#CA6702', '#000000', '0.35', '0.9'
 
 fig = plt.figure(figsize=(7.2, 6.4))
 gs = fig.add_gridspec(3, 2, width_ratios=[1.05, 1], height_ratios=[1, 1, 1], wspace=0.42, hspace=0.35)
@@ -194,7 +195,7 @@ series = [(np.log10(inc_w + 1), 'log$_{10}$ weekly cases', 'Regional incidence (
 for ax, (y, lab, ttl) in zip(axes, series):
     ax.plot(y.index, y.values, color=BLUE, lw=1.6)
     ax.set_ylabel(lab); ax.set_title(ttl, loc='left', fontsize=8, color=INK)
-    ax.axvspan(pd.Timestamp('2021-01-10'), SWITCH, color='#f0efec', zorder=0, lw=0)
+    ax.axvspan(pd.Timestamp('2021-01-10'), SWITCH, color='#E9D8A6', alpha=0.45, zorder=0, lw=0)
     for ev in [pd.Timestamp('2021-08-02')]:
         ax.axvline(ev, color=MUTED, lw=0.8, ls=(0, (2, 2)))
     ax.grid(axis='y', color=GRID, lw=0.6); ax.set_axisbelow(True)
