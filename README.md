@@ -41,6 +41,7 @@ python3 run_paradigm.py           # Table 4, calibration paradigms, ~5 s
 python3 run_validation.py         # Table 5, validation designs, ~15 s
 python3 run_decision.py           # Table 6, end-to-end decision analysis, ~15 s
 python3 run_calibration.py        # Table 2, published dispersions, instant
+python3 run_field.py              # Table 7, Figure 5, field data (see below), ~1 min
 python3 tests/test_assess.py      # checks for the decision procedure
 ```
 
@@ -80,6 +81,8 @@ so that renumbering is a single edit rather than a search across scripts.
 | Table 4 | `paradigm.csv` | `run_paradigm.py` | Inverse vs classical calibration, with calibrator uncertainty and Deming fits |
 | Table 5 | `table3.csv` | `run_validation.py` | Recovery of the variance components, test of D = 0 and bootstrap coverage in simulated validation designs |
 | Table 6 | `decision.csv` | `run_decision.py` | End-to-end cost of each policy relative to an oracle, processed calibrators vs clean standards |
+| Table 7 | `field_table.csv` | `run_field.py` | Variance components and decision in public wastewater surveillance data |
+| Figure 5 | `figure5.png`, `.pdf`, `.eps` | `run_field.py` | Criterion by target, plant and period; weekly series of incidence, target and spike |
 | Table S1 | `analytic_check.csv` | `run_analysis.py` | Closed-form vs simulated RMSE |
 | Table S2 | `decision.csv` | `run_decision.py` | Decision analysis at n = 15 and with the M2 default |
 | Table S3 | `paradigm.csv` | `run_paradigm.py` | Paradigm comparison, all cells |
@@ -90,9 +93,9 @@ are numbered in order of first citation. `decision_power.csv` gives the share of
 validation panels in which the test reaches a decision for 24, 48 and 96
 aliquots.
 
-**There is no Figure 5.** Earlier versions of this repository generated a
-parameter-plane figure placing published assays as arcs in (σs, σc). That figure
-has been withdrawn: a published dispersion constrains the *denominator* of θ\*
+**Figure 5 is new in v1.5.0** and is unrelated to the parameter-plane figure
+that carried that number in v1.3. That earlier figure placed published assays
+as arcs in (σs, σc) and was withdrawn: a published dispersion constrains the *denominator* of θ\*
 without fixing the split between its three components, so plotting it against
 the benefit boundary invites the inference it cannot support. The same material
 is now Table 4, which reports the constrained quantity and nothing more.
@@ -257,6 +260,28 @@ denominator of θ\*, and not the split between the three components, so it bound
 the magnitude of control-channel dispersion without locating an assay relative to
 the benefit boundary. The values collected here span 0.04–0.80 log₁₀ units, which brackets the
 0.05–0.80 grid used in the simulations.
+
+## Field data
+
+`run_field.py` applies the decision procedure, unchanged, to the CentrEau-COVID
+Quebec City wastewater dataset (Therrien et al., 2021; v1.04;
+doi:10.5281/zenodo.5597158; CC-BY 4.0): 496 daily composite samples from two
+facilities, January-October 2021, with SARS-CoV-2 N2, PMMoV and a BRSV spike
+measured as a triplex RT-qPCR in two or three wells. Each sample is a processing
+unit and each well a technical replicate. The dataset is not redistributed:
+
+```bash
+git clone https://github.com/modelEAU/CentrEau-COVID-Dataset-Qc data/qc
+unzip data/qc/data/centreau_qc.zip -d data/centreau_qc
+python3 run_field.py
+```
+
+Estimates are reported per target, facility and workflow period, from raw
+threshold cycles and after subtracting a common 15-sample rolling median from
+both channels, with intervals from a bootstrap over calendar weeks. Routine
+samples are not homogenised replicates, so the raw estimates assume that true
+concentration is independent of the processing perturbation; see the manuscript
+for why the detrended estimates are the conservative reading.
 
 ## Licence and citation
 

@@ -1,0 +1,57 @@
+{
+ "source": "CentrEau-COVID Quebec City, Zenodo 10.5281/zenodo.5597158 (v1.04)",
+ "WWMeasure_md5": "c235a6fba786de0465639e4e2a9409f5",
+ "qc_flagged_ct_removed": 82,
+ "wells": 1125,
+ "samples": 496,
+ "period_switch": "2021-05-04",
+ "trend_window_samples": 15,
+ "seed": 20261107,
+ "beta": 3.32,
+ "periods": {
+  "P1": {
+   "samples": 199,
+   "wells": 529,
+   "wells_per_sample": 2.66,
+   "analysis_batches": 33,
+   "extraction_lag_days_median": 5.0,
+   "extraction_lag_days_max": 48,
+   "n2_nondetect_wells": 19,
+   "brsv_var_between_batches": 0.64,
+   "collection": {
+    "cptp24h": 199
+   }
+  },
+  "P2": {
+   "samples": 297,
+   "wells": 596,
+   "wells_per_sample": 2.01,
+   "analysis_batches": 59,
+   "extraction_lag_days_median": 5.0,
+   "extraction_lag_days_max": 13,
+   "n2_nondetect_wells": 96,
+   "brsv_var_between_batches": 0.85,
+   "collection": {
+    "cpfp24h": 238,
+    "cptp24h": 59
+   }
+  }
+ },
+ "within_well_corr": {
+  "covn2": {
+   "covn2": 1.0,
+   "nbrsv": 0.112,
+   "npmmov": 0.202
+  },
+  "nbrsv": {
+   "covn2": 0.112,
+   "nbrsv": 1.0,
+   "npmmov": 0.688
+  },
+  "npmmov": {
+   "covn2": 0.202,
+   "nbrsv": 0.688,
+   "npmmov": 1.0
+  }
+ }
+}
