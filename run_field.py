@@ -16,7 +16,7 @@ The dataset is not redistributed here. To obtain it:
     python3 run_field.py --data <directory>   # or any directory with the CSVs
 
 Outputs in results/: field_table.csv (Table 7), field_external.csv,
-field_meta.json, figure5.png/.pdf/.eps. Seed 20261107.
+field_meta.json, field_window_sensitivity.csv, figure5.png/.pdf/.eps. Seed 20261107.
 """
 import argparse, hashlib, json, os, sys
 import numpy as np, pandas as pd
@@ -57,20 +57,20 @@ cases = c[c.type == 'conf'].set_index('date').value.sort_index().clip(lower=0)
 inc_fwd = cases.rolling(7, center=True).mean().shift(-3)   # mean of days 0..6 after sampling
 
 
-def common_detrend(d, tcol):
+def common_detrend(d, tcol, k=K_TREND):
     """Subtract a centred rolling median (over samples, in date order) from
     target and control alike, so slow drifts common to both, and slow drifts
     in either that happen to coincide, are removed before estimation."""
     u = d.groupby('unit').agg(T=(tcol, 'mean'), C=('nbrsv', 'mean'), date=('date', 'first')).sort_values('date')
-    trT = u['T'].rolling(K_TREND, center=True, min_periods=5).median()
-    trC = u['C'].rolling(K_TREND, center=True, min_periods=5).median()
+    trT = u['T'].rolling(k, center=True, min_periods=5).median()
+    trC = u['C'].rolling(k, center=True, min_periods=5).median()
     o = d[d.unit.isin(u.index)].copy()
     o['T_use'] = o[tcol] - o.unit.map(trT)
     o['C_use'] = o['nbrsv'] - o.unit.map(trC)
     return o.dropna(subset=['T_use', 'C_use'])
 
 
-def block_ci(d, B=4000, r_routine=2):
+def block_ci(d, B=4000, r_routine=2, gen=None):
     """Weekly block bootstrap of D; tau_C^2 re-estimated in each resample."""
     order = np.unique(d.unit.values)
     mT, mC, n, ssT, ssC = _unit_stats(d.T_use.values, d.C_use.values, d.unit.values)
@@ -78,8 +78,9 @@ def block_ci(d, B=4000, r_routine=2):
     wk = ((dates - dates.min()).dt.days // 7).values
     weeks = np.unique(wk)
     out = []
+    g = rng if gen is None else gen
     for _ in range(B):
-        idx = np.concatenate([np.where(wk == p)[0] for p in rng.choice(weeks, size=len(weeks))])
+        idx = np.concatenate([np.where(wk == p)[0] for p in g.choice(weeks, size=len(weeks))])
         tau = ssC[idx].sum() / (n[idx] - 1).sum()
         s2, c2 = _components(mT[idx], mC[idx], (1 / n[idx]).mean(), tau, BETA)
         out.append(s2 - c2 - tau / (r_routine * BETA ** 2))
@@ -145,6 +146,24 @@ meta = dict(source='CentrEau-COVID Quebec City, Zenodo 10.5281/zenodo.5597158 (v
             trend_window_samples=K_TREND, seed=SEED, beta=BETA, periods=desc,
             within_well_corr=wr[['covn2', 'nbrsv', 'npmmov']].corr().round(3).to_dict())
 json.dump(meta, open(f'{OUT}/field_meta.json', 'w'), indent=1, default=str)
+
+# sensitivity of the detrended estimates to the trend window (own generator, so
+# the outputs above are unchanged); 15 samples is the prespecified primary choice
+WINDOWS = [7, 11, 15, 21, 31]
+sens = []
+for target, tname in TARGETS.items():
+    for site, sname in SITES.items():
+        for period in ['P1', 'P2']:
+            d0 = wells[(wells.siteID == site) & (wells.period == period)].dropna(subset=[target, 'nbrsv'])
+            for k in WINDOWS:
+                d = common_detrend(d0, target, k)
+                a = assess_normalisation(d.T_use.values, d.C_use.values, d.unit.values,
+                                         r_routine=2, n_boot=4000, seed=SEED)
+                lo, hi = block_ci(d, gen=np.random.default_rng([SEED, k]))
+                sens.append(dict(target=tname, site=sname, period=period, window_samples=k, samples=a.n_units,
+                                 sigma_s2=a.sigma_s2, sigma_c2=a.sigma_c2, theta_star=a.theta_star,
+                                 D=a.contrast, D_lo=lo, D_hi=hi, call=a.recommendation.split('.')[0]))
+pd.DataFrame(sens).to_csv(f'{OUT}/field_window_sensitivity.csv', index=False, float_format='%.10g')
 
 # ---------------------------------------------------------------- figure
 import matplotlib
