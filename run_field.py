@@ -148,7 +148,7 @@ meta = dict(source='CentrEau-COVID Quebec City, Zenodo 10.5281/zenodo.5597158 (v
 json.dump(meta, open(f'{OUT}/field_meta.json', 'w'), indent=1, default=str)
 
 # sensitivity of the detrended estimates to the trend window (own generator, so
-# the outputs above are unchanged); 15 samples is the prespecified primary choice
+# the outputs above are unchanged); 15 samples is the primary analysis (Table 7)
 WINDOWS = [7, 11, 15, 21, 31]
 sens = []
 for target, tname in TARGETS.items():

@@ -7,7 +7,7 @@ output changed: every CSV and JSON of v1.5.0 is byte-identical.
 
 - `run_field.py` refits the detrended estimates with rolling-median windows of
   7, 11, 15 (primary), 21 and 31 samples and writes
-  `results/field_window_sensitivity.csv` (Supplementary Table S4). The block
+  `results/field_window_sensitivity.csv` (Table S5 in Online Resource 1). The block
   bootstrap for each window uses its own generator, seeded from the main seed
   and the window, so the random stream behind Table 7 is untouched.
 - `CITATION.cff`: version 1.6.0.
