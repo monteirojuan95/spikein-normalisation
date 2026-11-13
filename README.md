@@ -83,6 +83,7 @@ so that renumbering is a single edit rather than a search across scripts.
 | Table 6 | `decision.csv` | `run_decision.py` | End-to-end cost of each policy relative to an oracle, processed calibrators vs clean standards |
 | Table 7 | `field_table.csv` | `run_field.py` | Variance components and decision in public wastewater surveillance data |
 | Figure 5 | `figure5.png`, `.pdf`, `.eps` | `run_field.py` | Criterion by target, plant and period; weekly series of incidence, target and spike |
+| Table S5 | `field_window_sensitivity.csv` | `run_field.py` | Field estimates with trend windows of 7, 11, 15, 21 and 31 samples |
 | Table S1 | `analytic_check.csv` | `run_analysis.py` | Closed-form vs simulated RMSE |
 | Table S2 | `decision.csv` | `run_decision.py` | Decision analysis at n = 15 and with the M2 default |
 | Table S3 | `paradigm.csv` | `run_paradigm.py` | Paradigm comparison, all cells |

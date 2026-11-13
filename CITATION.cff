@@ -24,6 +24,6 @@ keywords:
   - inverse calibration
   - decision rule
 license: MIT
-version: "1.5.0"
-date-released: "2026-11-07"
+version: 1.6.0
+date-released: "2026-11-12"
 repository-code: "https://github.com/monteirojuan95/spikein-normalisation"
