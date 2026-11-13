@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.0 — unreleased
+## 1.6.0 – 2026-11-13
 
 Sensitivity of the field application to the detrending window. No existing
 output changed: every CSV and JSON of v1.5.0 is byte-identical.
@@ -12,7 +12,7 @@ output changed: every CSV and JSON of v1.5.0 is byte-identical.
   and the window, so the random stream behind Table 7 is untouched.
 - `CITATION.cff`: version 1.6.0.
 
-## 1.5.0 — 2026-11-07
+## 1.5.0 – 2026-11-07
 
 Application to field surveillance data, for the BMC Bioinformatics submission.
 No existing code path changed; every result of v1.4.0 (Tables 2-6, Figures 1-4,
@@ -37,7 +37,7 @@ Supplementary Tables S1-S3) is unchanged.
 - Field outputs are written to 10 significant digits and reproduce bit-for-bit
   under NumPy 2.0.2 with pandas 2.2.3 and under NumPy 2.5.3 with pandas 3.0.5.
 
-## 1.4.0 — 2026-11-04
+## 1.4.0 – 2026-11-04
 
 Revision for submission to Chemometrics and Intelligent Laboratory Systems.
 Results of v1.3 (Tables 3 and 2 of the new manuscript, Figures 1-4) are
@@ -62,7 +62,7 @@ unchanged and reproduce bit-for-bit.
 - Every CSV, old and new, verified bit-for-bit on the pinned versions
   (Python 3.12, NumPy 2.0.2) and on Python 3.13 with NumPy 2.5.
 
-## 1.3.2 — 2026-07-30
+## 1.3.2 – 2026-07-30
 
 Metadata only. No code, no results, no figures changed.
 
@@ -75,7 +75,7 @@ Metadata only. No code, no results, no figures changed.
   is identical to `v1.3.0` in content. The `v1.3.0` GitHub release has been
   retired to avoid pointing readers at an unarchived artifact.
 
-## 1.3.0 — 2026-07-29
+## 1.3.0 – 2026-07-29
 
 Pre-release audit against the submitted manuscript. No result changes: every
 number in every table is unaltered and still reproduces bit-for-bit.
@@ -126,7 +126,7 @@ number in every table is unaltered and still reproduces bit-for-bit.
   drawn with `extend='max'`, since the surface reaches +291% against a scale
   that stops at +200%.
 
-## 1.2.0 — 2026-07-29
+## 1.2.0 – 2026-07-29
 
 Adds the evaluation of the operational decision procedure, which the manuscript
 previously asserted without supporting code.
@@ -167,7 +167,7 @@ previously asserted without supporting code.
   constraint biases whichever component is genuinely small *upward*, not
   downward.
 
-## 1.1.0 — 2026-07-29
+## 1.1.0 – 2026-07-29
 
 Brings the repository into line with the submitted manuscript.
 
@@ -229,6 +229,6 @@ Brings the repository into line with the submitted manuscript.
 - **README** documents the figure-to-script mapping, the MCSE definitions and
   the absence of Figure 5.
 
-## 1.0.0 — 2026-07-28
+## 1.0.0 – 2026-07-28
 
 Initial release.
